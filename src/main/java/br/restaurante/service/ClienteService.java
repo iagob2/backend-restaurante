@@ -37,9 +37,9 @@ public class ClienteService {
         }
 
         // 2. Limpar a formatação do CPF e validar o tamanho
-        String cpfLimpo = cliente.getCpf().replaceAll("[^0-9]", "");
-        if (cpfLimpo.length() != 11) {
-            throw new InputMismatchException("O CPF deve conter 11 dígitos.");
+        String cpfLimpo = somenteNumeros(cliente.getCpf());
+        if (!isCpfValido(cpfLimpo)) {
+            throw new InputMismatchException("O CPF informado é inválido.");
         }
         cliente.setCpf(cpfLimpo);
 
@@ -75,6 +75,42 @@ public class ClienteService {
 
         // 7. Salvar a entidade no banco de dados
         return clienteRepository.save(cliente);
+    }
+
+    private String somenteNumeros(String valor) {
+        if (valor == null) {
+            return "";
+        }
+        return valor.replaceAll("\\D", "");
+    }
+
+    private boolean isCpfValido(String cpf) {
+        if (cpf == null || cpf.length() != 11) {
+            return false;
+        }
+
+        if (cpf.chars().distinct().count() == 1) {
+            return false;
+        }
+
+        try {
+            int digito1 = calcularDigitoCpf(cpf, 10);
+            int digito2 = calcularDigitoCpf(cpf, 11);
+            return digito1 == Character.getNumericValue(cpf.charAt(9))
+                    && digito2 == Character.getNumericValue(cpf.charAt(10));
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    private int calcularDigitoCpf(String cpf, int pesoInicial) {
+        int soma = 0;
+        int peso = pesoInicial;
+        for (int i = 0; i < pesoInicial - 1; i++) {
+            soma += Character.getNumericValue(cpf.charAt(i)) * peso--;
+        }
+        int resto = soma % 11;
+        return resto < 2 ? 0 : 11 - resto;
     }
 
     /**

@@ -32,7 +32,30 @@
                     restaurante.getSenha() == null || restaurante.getSenha().isBlank()) {
                 throw new InputMismatchException("Os campos Nome, CNPJ, Email e Senha são obrigatórios.");
             }
-            // ...
+
+            String cnpjLimpo = somenteNumeros(restaurante.getCnpj());
+            if (!isCnpjValido(cnpjLimpo)) {
+                throw new InputMismatchException("O CNPJ informado é inválido.");
+            }
+            restaurante.setCnpj(cnpjLimpo);
+
+            Optional<Restaurante> restauranteExistente = restauranteRepository.findByCnpj(cnpjLimpo);
+            if (restauranteExistente.isPresent()) {
+                throw new IllegalArgumentException("CNPJ já cadastrado.");
+            }
+
+            Optional<Restaurante> restauranteEmailExistente = restauranteRepository.findByEmail(restaurante.getEmail());
+            if (restauranteEmailExistente.isPresent()) {
+                throw new IllegalArgumentException("Email já cadastrado.");
+            }
+
+            if (restaurante.getCep() != null && !restaurante.getCep().isBlank()) {
+                Endereco endereco = viaCepService.buscaEnderecoPorCep(restaurante.getCep());
+                restaurante.setRua(endereco.rua());
+                restaurante.setBairro(endereco.bairro());
+                restaurante.setCidade(endereco.cidade());
+                restaurante.setEstado(endereco.estado());
+            }
 
             // 4. Criptografar a senha antes de salvar
             String senhaHash = passwordEncoder.encode(restaurante.getSenha());
@@ -71,7 +94,15 @@
             return restauranteRepository.findById(id).map(restauranteExistente -> {
                 // ... (copiar todos os outros campos, exceto a senha)
                 restauranteExistente.setNome(restauranteAtualizado.getNome());
-                restauranteExistente.setCnpj(restauranteAtualizado.getCnpj());
+                String cnpjLimpo = somenteNumeros(restauranteAtualizado.getCnpj());
+                if (isCnpjValido(cnpjLimpo) && !cnpjLimpo.equals(restauranteExistente.getCnpj())) {
+                    restauranteRepository.findByCnpj(cnpjLimpo).ifPresent(outro -> {
+                        if (!outro.getId().equals(restauranteExistente.getId())) {
+                            throw new IllegalArgumentException("CNPJ já cadastrado.");
+                        }
+                    });
+                    restauranteExistente.setCnpj(cnpjLimpo);
+                }
                 restauranteExistente.setEmail(restauranteAtualizado.getEmail());
                 restauranteExistente.setTelefone(restauranteAtualizado.getTelefone());
                 // ... e os outros campos
@@ -98,5 +129,41 @@
                 return true;
             }
             return false;
+        }
+
+        private String somenteNumeros(String valor) {
+            if (valor == null) {
+                return "";
+            }
+            return valor.replaceAll("\\D", "");
+        }
+
+        private boolean isCnpjValido(String cnpj) {
+            if (cnpj == null || cnpj.length() != 14) {
+                return false;
+            }
+
+            if (cnpj.chars().distinct().count() == 1) {
+                return false;
+            }
+
+            try {
+                int digito1 = calcularDigitoCnpj(cnpj, new int[]{5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2});
+                int digito2 = calcularDigitoCnpj(cnpj, new int[]{6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2});
+
+                return digito1 == Character.getNumericValue(cnpj.charAt(12))
+                        && digito2 == Character.getNumericValue(cnpj.charAt(13));
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+
+        private int calcularDigitoCnpj(String cnpj, int[] pesos) {
+            int soma = 0;
+            for (int i = 0; i < pesos.length; i++) {
+                soma += Character.getNumericValue(cnpj.charAt(i)) * pesos[i];
+            }
+            int resto = soma % 11;
+            return resto < 2 ? 0 : 11 - resto;
         }
     }
