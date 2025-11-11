@@ -81,6 +81,7 @@ public class ItemRestauranteService {
             item.setDescricao(itemAtualizado.getDescricao());
             item.setPreco(itemAtualizado.getPreco());
             item.setImagemUrl(itemAtualizado.getImagemUrl());
+            item.setCategoria(itemAtualizado.getCategoria());
             // Lógica de validação pode ser adicionada aqui, se necessário
             return itemRestauranteRepository.save(item);
         });

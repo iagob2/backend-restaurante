@@ -113,6 +113,18 @@
         <input type="text" id="descricaoItem" name="descricao">
         <label for="precoItem">Preço:</label>
         <input type="number" id="precoItem" name="preco" step="0.01" required>
+        <label for="categoriaItem">Categoria:</label>
+        <select id="categoriaItem" name="categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <option value="Prato quente">Prato quente</option>
+            <option value="Prato frio">Prato frio</option>
+            <option value="Salada">Salada</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Sobremesa">Sobremesa</option>
+            <option value="Bebida">Bebida</option>
+            <option value="Drink">Drink</option>
+            <option value="Outro">Outro</option>
+        </select>
         <label for="imagemFileItem">Subir Foto:</label>
         <input type="file" id="imagemFileItem" name="imagemFile" accept="image/*">
         <label for="restauranteSelect">Restaurante:</label>
@@ -134,6 +146,7 @@
             <th>Nome</th>
             <th>Preço</th>
             <th>ID Restaurante</th>
+            <th>Categoria</th>
             <th>Imagem</th>
             <th>Ações</th>
         </tr>
@@ -152,6 +165,18 @@
             <input type="text" id="updateDescricaoItem" name="descricao">
             <label for="updatePrecoItem">Preço:</label>
             <input type="number" id="updatePrecoItem" name="preco" step="0.01">
+            <label for="updateCategoriaItem">Categoria:</label>
+            <select id="updateCategoriaItem" name="categoria">
+                <option value="">Selecione uma categoria</option>
+                <option value="Prato quente">Prato quente</option>
+                <option value="Prato frio">Prato frio</option>
+                <option value="Salada">Salada</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Sobremesa">Sobremesa</option>
+                <option value="Bebida">Bebida</option>
+                <option value="Drink">Drink</option>
+                <option value="Outro">Outro</option>
+            </select>
             <label for="updateImagemUrlItem">URL da Imagem:</label>
             <input type="text" id="updateImagemUrlItem" name="imagemUrl">
             <button type="submit">Salvar Alterações</button>
@@ -193,9 +218,10 @@ async function carregarRestaurantes() {
                 <td>${item.nome}</td>
                 <td>R$ ${item.preco.toFixed(2)}</td>
                 <td>${item.restaurante ? item.restaurante.id : 'N/A'}</td>
+                <td>${item.categoria || 'Sem categoria'}</td>
                 <td>${item.imagemUrl ? `<a href="${item.imagemUrl}" target="_blank">Ver imagem</a>` : 'Sem imagem'}</td>
                 <td class="actions-buttons">
-                    <button class="edit" onclick="editarItem(${item.id}, '${item.nome}', '${item.descricao}', ${item.preco}, '${item.imagemUrl || ''}')">Editar</button>
+                    <button class="edit" onclick='editarItem(${item.id}, ${JSON.stringify(item.nome)}, ${JSON.stringify(item.descricao)}, ${item.preco}, ${JSON.stringify(item.imagemUrl || '')}, ${JSON.stringify(item.categoria || '')})'>Editar</button>
                     <button class="delete" onclick="deletarItem(${item.id})">Excluir</button>
                 </td>
             `;
@@ -246,6 +272,7 @@ async function carregarRestaurantes() {
         descricao: formData.get('descricao'),
         preco: parseFloat(formData.get('preco')),
         imagemUrl: imagemUrl || '', // Usa a URL obtida ou uma string vazia
+        categoria: formData.get('categoria'),
         restaurante: { id: parseInt(formData.get('restaurante.id')) }
     };
 
@@ -272,13 +299,14 @@ async function carregarRestaurantes() {
 });
 
     // Mostra o formulário de atualização com os dados do item
-    function editarItem(id, nome, descricao, preco, imagemUrl) {
+    function editarItem(id, nome, descricao, preco, imagemUrl, categoria) {
         document.getElementById('formUpdateItem').style.display = 'block';
         document.getElementById('updateIdItem').value = id;
         document.getElementById('updateNomeItem').value = nome;
         document.getElementById('updateDescricaoItem').value = descricao;
         document.getElementById('updatePrecoItem').value = preco;
         document.getElementById('updateImagemUrlItem').value = imagemUrl;
+        document.getElementById('updateCategoriaItem').value = categoria || '';
     }
 
     // Lida com o envio do formulário de atualização de item
@@ -287,6 +315,9 @@ async function carregarRestaurantes() {
         const id = document.getElementById('updateIdItem').value;
         const form = event.target;
         const itemData = Object.fromEntries(new FormData(form).entries());
+        if (itemData.preco) {
+            itemData.preco = parseFloat(itemData.preco);
+        }
 
         const response = await fetch(`/itens/${id}`, {
             method: 'PUT',

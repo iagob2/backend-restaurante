@@ -17,6 +17,9 @@ public class ItemRestaurante {
 
     private Double preco; // Usado para 'valor' no front-end
 
+    @Column(length = 50)
+    private String categoria; // Ex.: "Prato quente", "Salada", "Bebida"
+
     @Column(length = 2048)
     private String imagemUrl; // Novo campo para a imagem do front-end
 
@@ -63,6 +66,14 @@ public class ItemRestaurante {
 
     public void setPreco(Double preco) {
         this.preco = preco;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public String getImagemUrl() {
