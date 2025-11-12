@@ -23,6 +23,9 @@ public class ItemRestaurante {
     @Column(length = 2048)
     private String imagemUrl; // Novo campo para a imagem do front-end
 
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean ativo = true;
+
     @ManyToOne
     @JoinColumn(name = "restaurante_id", nullable = false)
     @JsonIgnoreProperties({"avaliacoes", "senha"})
@@ -82,6 +85,14 @@ public class ItemRestaurante {
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
     public Restaurante getRestaurante() {

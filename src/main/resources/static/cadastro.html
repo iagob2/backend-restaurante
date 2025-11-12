@@ -90,6 +90,21 @@
         .form-actions button:hover {
             background-color: #218838;
         }
+        input[type="file"] {
+            margin-bottom: 8px;
+        }
+        .upload-status {
+            display: block;
+            margin-top: 4px;
+            font-size: 14px;
+            color: #555;
+        }
+        .upload-status.success {
+            color: #28a745;
+        }
+        .upload-status.error {
+            color: #d9534f;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +112,7 @@
 <div class="button-group">
     <button onclick="showCadastro('cliente')">Cadastrar Cliente</button>
     <button onclick="showCadastro('restaurante')">Cadastrar Restaurante</button>
+    <button onclick="showCadastro('restauranteExistente')">Atualizar Restaurante</button>
 </div>
 
 <div id="cadastroCliente" class="container">
@@ -192,6 +208,21 @@
         <label for="estadoRestaurante">Estado:</label>
         <input type="text" id="estadoRestaurante" name="estado">
 
+        <label for="cardapioFileRestaurante">Cardápio (arquivo ou imagem):</label>
+        <input type="file" id="cardapioFileRestaurante" accept=".pdf,image/*">
+        <input type="hidden" id="cardapioUrlRestaurante" name="cardapioUrl">
+        <small id="cardapioStatusRestaurante" class="upload-status">Nenhum arquivo selecionado.</small>
+
+        <label for="logoFileRestaurante">Logo (imagem):</label>
+        <input type="file" id="logoFileRestaurante" accept="image/*">
+        <input type="hidden" id="logoUrlRestaurante" name="logoUrl">
+        <small id="logoStatusRestaurante" class="upload-status">Nenhum arquivo selecionado.</small>
+
+        <label for="bannerFileRestaurante">Banner (imagem):</label>
+        <input type="file" id="bannerFileRestaurante" accept="image/*">
+        <input type="hidden" id="bannerUrlRestaurante" name="bannerUrl">
+        <small id="bannerStatusRestaurante" class="upload-status">Nenhum arquivo selecionado.</small>
+
         <div class="checkbox-group">
             <input type="checkbox" id="aceitaComunicacao" name="aceitaComunicacao">
             <label for="aceitaComunicacao">Aceito receber comunicações</label>
@@ -211,22 +242,132 @@
     </form>
 </div>
 
+<div id="atualizaRestaurante" class="container">
+    <h2>Atualizar Restaurante Existente</h2>
+    <div id="listaRestaurantesWrapper">
+        <label for="selectRestauranteExistente">Selecione um Restaurante:</label>
+        <select id="selectRestauranteExistente">
+            <option value="">Carregando restaurantes...</option>
+        </select>
+    </div>
+
+    <form id="formAtualizaRestaurante" style="margin-top: 20px; display: none;">
+        <input type="hidden" id="idRestauranteExistente">
+
+        <label for="nomeRestauranteExistente">Nome:</label>
+        <input type="text" id="nomeRestauranteExistente" name="nome">
+
+        <label for="cnpjRestauranteExistente">CNPJ:</label>
+        <input type="text" id="cnpjRestauranteExistente" name="cnpj">
+
+        <label for="telefoneRestauranteExistente">Telefone:</label>
+        <input type="tel" id="telefoneRestauranteExistente" name="telefone">
+
+        <label for="emailRestauranteExistente">Email:</label>
+        <input type="email" id="emailRestauranteExistente" name="email">
+
+        <label for="senhaRestauranteExistente">Senha:</label>
+        <input type="password" id="senhaRestauranteExistente" name="senha" placeholder="Deixe em branco para não alterar">
+
+        <h3>Endereço</h3>
+        <label for="cepRestauranteExistente">CEP:</label>
+        <input type="text" id="cepRestauranteExistente" name="cep">
+
+        <label for="ruaRestauranteExistente">Rua:</label>
+        <input type="text" id="ruaRestauranteExistente" name="rua">
+
+        <label for="numeroRestauranteExistente">Número:</label>
+        <input type="number" id="numeroRestauranteExistente" name="numero">
+
+        <label for="bairroRestauranteExistente">Bairro:</label>
+        <input type="text" id="bairroRestauranteExistente" name="bairro">
+
+        <label for="cidadeRestauranteExistente">Cidade:</label>
+        <input type="text" id="cidadeRestauranteExistente" name="cidade">
+
+        <label for="estadoRestauranteExistente">Estado:</label>
+        <input type="text" id="estadoRestauranteExistente" name="estado">
+
+        <label for="descricaoRestauranteExistente">Descrição:</label>
+        <input type="text" id="descricaoRestauranteExistente" name="descricao">
+
+        <label for="horarioRestauranteExistente">Horário:</label>
+        <input type="text" id="horarioRestauranteExistente" name="horario">
+
+        <label for="lotacaoRestauranteExistente">Lotação:</label>
+        <input type="number" id="lotacaoRestauranteExistente" name="lotacao" min="0">
+
+        <label for="siteRestauranteExistente">Site:</label>
+        <input type="text" id="siteRestauranteExistente" name="site" placeholder="Ex.: www.google.com">
+
+        <label for="facebookRestauranteExistente">Facebook:</label>
+        <input type="text" id="facebookRestauranteExistente" name="facebook" placeholder="Ex.: www.facebook.com/sua-pagina">
+
+        <label for="instagramRestauranteExistente">Instagram:</label>
+        <input type="text" id="instagramRestauranteExistente" name="instagram" placeholder="Ex.: @seu_perfil">
+
+        <label for="whatsappRestauranteExistente">WhatsApp:</label>
+        <input type="tel" id="whatsappRestauranteExistente" name="whatsapp">
+
+        <label for="cardapioFileRestauranteExistente">Cardápio (arquivo ou imagem):</label>
+        <input type="file" id="cardapioFileRestauranteExistente" accept=".pdf,image/*">
+        <input type="hidden" id="cardapioUrlRestauranteExistente" name="cardapioUrl">
+        <small id="cardapioStatusRestauranteExistente" class="upload-status">Nenhum arquivo selecionado.</small>
+
+        <label for="logoFileRestauranteExistente">Logo (imagem):</label>
+        <input type="file" id="logoFileRestauranteExistente" accept="image/*">
+        <input type="hidden" id="logoUrlRestauranteExistente" name="logoUrl">
+        <small id="logoStatusRestauranteExistente" class="upload-status">Nenhum arquivo selecionado.</small>
+
+        <label for="bannerFileRestauranteExistente">Banner (imagem):</label>
+        <input type="file" id="bannerFileRestauranteExistente" accept="image/*">
+        <input type="hidden" id="bannerUrlRestauranteExistente" name="bannerUrl">
+        <small id="bannerStatusRestauranteExistente" class="upload-status">Nenhum arquivo selecionado.</small>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="aceitaComunicacaoExistente" name="aceitaComunicacao">
+            <label for="aceitaComunicacaoExistente">Aceito receber comunicações</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="aceitaMarketingExistente" name="aceitaMarketing">
+            <label for="aceitaMarketingExistente">Aceito receber promoções por e-mail</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="aceitaProtecaoDadosExistente" name="aceitaProtecaoDados">
+            <label for="aceitaProtecaoDadosExistente">Aceito a Política de Proteção de Dados</label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Atualizar Restaurante</button>
+        </div>
+    </form>
+</div>
+
 <script>
-    // Função para mostrar a seção de cadastro
     function showCadastro(tipo) {
         const clienteDiv = document.getElementById('cadastroCliente');
         const restauranteDiv = document.getElementById('cadastroRestaurante');
+        const atualizaRestauranteDiv = document.getElementById('atualizaRestaurante');
+        const selectRestaurante = document.getElementById('selectRestauranteExistente');
 
         if (tipo === 'cliente') {
             clienteDiv.classList.add('active');
             restauranteDiv.classList.remove('active');
+            atualizaRestauranteDiv.classList.remove('active');
         } else if (tipo === 'restaurante') {
             restauranteDiv.classList.add('active');
             clienteDiv.classList.remove('active');
+            atualizaRestauranteDiv.classList.remove('active');
+        } else if (tipo === 'restauranteExistente') {
+            atualizaRestauranteDiv.classList.add('active');
+            clienteDiv.classList.remove('active');
+            restauranteDiv.classList.remove('active');
+            if (selectRestaurante.dataset.loaded !== 'true') {
+                carregarListaRestaurantes();
+            }
         }
     }
 
-    // Função para buscar o CEP na API do ViaCEP
     async function buscarCep(cep, ruaId, bairroId, cidadeId, estadoId) {
         if (!cep) return;
 
@@ -247,7 +388,113 @@
         }
     }
 
-    // Lógica para o formulário de Cadastro de Cliente
+    async function uploadArquivo(tipo, file, statusElement) {
+        if (!file) {
+            statusElement.textContent = 'Nenhum arquivo selecionado.';
+            statusElement.classList.remove('success', 'error');
+            return null;
+        }
+
+        statusElement.textContent = 'Enviando arquivo...';
+        statusElement.classList.remove('success', 'error');
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch(`/restaurantes/upload/${tipo}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Falha no upload.');
+            }
+
+            const data = await response.json();
+            statusElement.textContent = `Arquivo enviado: ${file.name}`;
+            statusElement.classList.add('success');
+            statusElement.classList.remove('error');
+            return data.url;
+        } catch (error) {
+            statusElement.textContent = `Erro ao enviar arquivo: ${error.message}`;
+            statusElement.classList.add('error');
+            statusElement.classList.remove('success');
+            return null;
+        }
+    }
+
+    function configurarUploadArquivo(fileInputId, hiddenInputId, statusElementId, tipo) {
+        const fileInput = document.getElementById(fileInputId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const statusElement = document.getElementById(statusElementId);
+
+        fileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                hiddenInput.value = '';
+                statusElement.textContent = 'Nenhum arquivo selecionado.';
+                statusElement.classList.remove('success', 'error');
+                return;
+            }
+
+            const url = await uploadArquivo(tipo, file, statusElement);
+            hiddenInput.value = url || '';
+        });
+    }
+
+    configurarUploadArquivo('cardapioFileRestaurante', 'cardapioUrlRestaurante', 'cardapioStatusRestaurante', 'cardapio');
+    configurarUploadArquivo('logoFileRestaurante', 'logoUrlRestaurante', 'logoStatusRestaurante', 'logos');
+    configurarUploadArquivo('bannerFileRestaurante', 'bannerUrlRestaurante', 'bannerStatusRestaurante', 'banners');
+
+    configurarUploadArquivo('cardapioFileRestauranteExistente', 'cardapioUrlRestauranteExistente', 'cardapioStatusRestauranteExistente', 'cardapio');
+    configurarUploadArquivo('logoFileRestauranteExistente', 'logoUrlRestauranteExistente', 'logoStatusRestauranteExistente', 'logos');
+    configurarUploadArquivo('bannerFileRestauranteExistente', 'bannerUrlRestauranteExistente', 'bannerStatusRestauranteExistente', 'banners');
+
+    function resetUploadStatusNovo() {
+        ['cardapioStatusRestaurante', 'logoStatusRestaurante', 'bannerStatusRestaurante'].forEach(id => {
+            const el = document.getElementById(id);
+            el.textContent = 'Nenhum arquivo selecionado.';
+            el.classList.remove('success', 'error');
+        });
+        ['cardapioFileRestaurante', 'logoFileRestaurante', 'bannerFileRestaurante'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        ['cardapioUrlRestaurante', 'logoUrlRestaurante', 'bannerUrlRestaurante'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    }
+
+    function resetUploadStatusExistente() {
+        ['cardapioStatusRestauranteExistente', 'logoStatusRestauranteExistente', 'bannerStatusRestauranteExistente'].forEach(id => {
+            const el = document.getElementById(id);
+            el.textContent = 'Nenhum arquivo selecionado.';
+            el.classList.remove('success', 'error');
+        });
+        ['cardapioFileRestauranteExistente', 'logoFileRestauranteExistente', 'bannerFileRestauranteExistente'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    }
+
+    function atualizarStatusIndividual(url, statusElementId) {
+        const statusElement = document.getElementById(statusElementId);
+        if (url) {
+            statusElement.textContent = `Arquivo atual: ${url}`;
+            statusElement.classList.add('success');
+            statusElement.classList.remove('error');
+        } else {
+            statusElement.textContent = 'Nenhum arquivo cadastrado.';
+            statusElement.classList.remove('success', 'error');
+        }
+    }
+
+    function atualizarStatusUploadRestauranteExistente(restaurante) {
+        atualizarStatusIndividual(restaurante.cardapioUrl, 'cardapioStatusRestauranteExistente');
+        atualizarStatusIndividual(restaurante.logoUrl, 'logoStatusRestauranteExistente');
+        atualizarStatusIndividual(restaurante.bannerUrl, 'bannerStatusRestauranteExistente');
+    }
+
     document.getElementById('formCliente').addEventListener('submit', async function(event) {
         event.preventDefault();
 
@@ -280,7 +527,6 @@
         }
     });
 
-    // Lógica para o formulário de Cadastro de Restaurante
     document.getElementById('formRestaurante').addEventListener('submit', async function(event) {
         event.preventDefault();
 
@@ -291,6 +537,16 @@
         restauranteData.aceitaComunicacao = form.elements['aceitaComunicacao'].checked;
         restauranteData.aceitaMarketing = form.elements['aceitaMarketing'].checked;
         restauranteData.aceitaProtecaoDados = form.elements['aceitaProtecaoDados'].checked;
+
+        Object.keys(restauranteData).forEach(key => {
+            if (typeof restauranteData[key] === 'string') {
+                const trimmed = restauranteData[key].trim();
+                restauranteData[key] = trimmed;
+                if (trimmed === '') {
+                    delete restauranteData[key];
+                }
+            }
+        });
 
         try {
             const response = await fetch('/restaurantes', {
@@ -304,6 +560,7 @@
             if (response.status === 201) {
                 alert('Restaurante cadastrado com sucesso!');
                 form.reset();
+                resetUploadStatusNovo();
             } else {
                 const errorData = await response.json();
                 alert('Erro ao cadastrar restaurante: ' + (errorData.message || response.statusText));
@@ -313,16 +570,155 @@
         }
     });
 
-    // Event listener para o campo de CEP do Cliente
     document.getElementById('cepCliente').addEventListener('blur', (event) => {
         const cep = event.target.value.replace(/\D/g, '');
         buscarCep(cep, 'ruaCliente', 'bairroCliente', 'cidadeCliente', 'estadoCliente');
     });
 
-    // Event listener para o campo de CEP do Restaurante
     document.getElementById('cepRestaurante').addEventListener('blur', (event) => {
         const cep = event.target.value.replace(/\D/g, '');
         buscarCep(cep, 'ruaRestaurante', 'bairroRestaurante', 'cidadeRestaurante', 'estadoRestaurante');
+    });
+
+    document.getElementById('cepRestauranteExistente').addEventListener('blur', (event) => {
+        const cep = event.target.value.replace(/\D/g, '');
+        buscarCep(cep, 'ruaRestauranteExistente', 'bairroRestauranteExistente', 'cidadeRestauranteExistente', 'estadoRestauranteExistente');
+    });
+
+    async function carregarListaRestaurantes() {
+        const select = document.getElementById('selectRestauranteExistente');
+        try {
+            const response = await fetch('/restaurantes');
+            if (!response.ok) {
+                throw new Error('Não foi possível carregar os restaurantes.');
+            }
+            const restaurantes = await response.json();
+            if (!Array.isArray(restaurantes) || restaurantes.length === 0) {
+                select.innerHTML = '<option value="">Nenhum restaurante cadastrado</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">Selecione...</option>';
+            restaurantes.forEach(restaurante => {
+                const option = document.createElement('option');
+                option.value = restaurante.id;
+                option.textContent = `${restaurante.id} - ${restaurante.nome}`;
+                select.appendChild(option);
+            });
+            select.dataset.loaded = 'true';
+        } catch (error) {
+            alert('Erro ao carregar restaurantes: ' + error.message);
+            select.innerHTML = '<option value="">Erro ao carregar. Tente novamente.</option>';
+        }
+    }
+
+    document.getElementById('selectRestauranteExistente').addEventListener('change', async function(event) {
+        const id = event.target.value;
+        const form = document.getElementById('formAtualizaRestaurante');
+
+        if (!id) {
+            form.style.display = 'none';
+            form.reset();
+            resetUploadStatusExistente();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/restaurantes/${id}`);
+            if (!response.ok) {
+                throw new Error('Restaurante não encontrado.');
+            }
+            const restaurante = await response.json();
+            preencherFormularioRestauranteExistente(restaurante);
+            form.style.display = 'block';
+        } catch (error) {
+            alert('Erro ao carregar restaurante: ' + error.message);
+            form.style.display = 'none';
+            form.reset();
+            resetUploadStatusExistente();
+        }
+    });
+
+    function preencherFormularioRestauranteExistente(restaurante) {
+        document.getElementById('idRestauranteExistente').value = restaurante.id || '';
+        document.getElementById('nomeRestauranteExistente').value = restaurante.nome || '';
+        document.getElementById('cnpjRestauranteExistente').value = restaurante.cnpj || '';
+        document.getElementById('telefoneRestauranteExistente').value = restaurante.telefone || '';
+        document.getElementById('emailRestauranteExistente').value = restaurante.email || '';
+        document.getElementById('senhaRestauranteExistente').value = restaurante.senha || '';
+        document.getElementById('cepRestauranteExistente').value = restaurante.cep || '';
+        document.getElementById('ruaRestauranteExistente').value = restaurante.rua || '';
+        document.getElementById('numeroRestauranteExistente').value = restaurante.numero ?? '';
+        document.getElementById('bairroRestauranteExistente').value = restaurante.bairro || '';
+        document.getElementById('cidadeRestauranteExistente').value = restaurante.cidade || '';
+        document.getElementById('estadoRestauranteExistente').value = restaurante.estado || '';
+        document.getElementById('descricaoRestauranteExistente').value = restaurante.descricao || '';
+        document.getElementById('horarioRestauranteExistente').value = restaurante.horario || '';
+        document.getElementById('lotacaoRestauranteExistente').value = restaurante.lotacao ?? '';
+        document.getElementById('siteRestauranteExistente').value = restaurante.site || '';
+        document.getElementById('facebookRestauranteExistente').value = restaurante.facebook || '';
+        document.getElementById('instagramRestauranteExistente').value = restaurante.instagram || '';
+        document.getElementById('whatsappRestauranteExistente').value = restaurante.whatsapp || '';
+        document.getElementById('cardapioUrlRestauranteExistente').value = restaurante.cardapioUrl || '';
+        document.getElementById('logoUrlRestauranteExistente').value = restaurante.logoUrl || '';
+        document.getElementById('bannerUrlRestauranteExistente').value = restaurante.bannerUrl || '';
+        document.getElementById('aceitaComunicacaoExistente').checked = !!restaurante.aceitaComunicacao;
+        document.getElementById('aceitaMarketingExistente').checked = !!restaurante.aceitaMarketing;
+        document.getElementById('aceitaProtecaoDadosExistente').checked = !!restaurante.aceitaProtecaoDados;
+        atualizarStatusUploadRestauranteExistente(restaurante);
+    }
+
+    document.getElementById('formAtualizaRestaurante').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const id = document.getElementById('idRestauranteExistente').value;
+        if (!id) {
+            alert('Carregue um restaurante antes de atualizar.');
+            return;
+        }
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const restauranteData = Object.fromEntries(formData.entries());
+
+        restauranteData.id = Number(id);
+        restauranteData.numero = form.elements['numero'].value ? Number(form.elements['numero'].value) : null;
+        restauranteData.lotacao = form.elements['lotacao'].value ? Number(form.elements['lotacao'].value) : null;
+        restauranteData.aceitaComunicacao = form.elements['aceitaComunicacao'].checked;
+        restauranteData.aceitaMarketing = form.elements['aceitaMarketing'].checked;
+        restauranteData.aceitaProtecaoDados = form.elements['aceitaProtecaoDados'].checked;
+
+        Object.keys(restauranteData).forEach(key => {
+            if (typeof restauranteData[key] === 'string') {
+                const trimmed = restauranteData[key].trim();
+                restauranteData[key] = trimmed;
+                if (trimmed === '') {
+                    delete restauranteData[key];
+                }
+            }
+        });
+
+        try {
+            const response = await fetch(`/restaurantes/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(restauranteData)
+            });
+
+            if (response.ok) {
+                alert('Restaurante atualizado com sucesso!');
+                document.getElementById('selectRestauranteExistente').value = '';
+                form.reset();
+                form.style.display = 'none';
+                resetUploadStatusExistente();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || response.statusText);
+            }
+        } catch (error) {
+            alert('Erro ao atualizar restaurante: ' + error.message);
+        }
     });
 
     window.onload = () => showCadastro('cliente');

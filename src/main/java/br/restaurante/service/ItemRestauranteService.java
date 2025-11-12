@@ -48,6 +48,9 @@ public class ItemRestauranteService {
         // Atribui a referência completa do restaurante à entidade antes de salvar
         itemRestaurante.setRestaurante(restauranteExistente.get());
 
+        // Garante que o item esteja ativo ao ser criado
+        itemRestaurante.setAtivo(true);
+
         // 3. Salvar a entidade no banco de dados
         return itemRestauranteRepository.save(itemRestaurante);
     }
@@ -57,7 +60,7 @@ public class ItemRestauranteService {
      * @return Uma lista de todos os itens.
      */
     public List<ItemRestaurante> buscarTodosItens() {
-        return itemRestauranteRepository.findAll();
+        return itemRestauranteRepository.findByAtivoTrueOrderByNomeAsc();
     }
 
     /**
@@ -91,8 +94,14 @@ public class ItemRestauranteService {
      * Deleta um item do cardápio por ID.
      * @param id O ID do item a ser deletado.
      */
-    public void deletarItem(Long id) {
-        itemRestauranteRepository.deleteById(id);
+    public boolean deletarItem(Long id) {
+        return itemRestauranteRepository.findById(id)
+                .map(item -> {
+                    item.setAtivo(false);
+                    itemRestauranteRepository.save(item);
+                    return true;
+                })
+                .orElse(false);
     }
 
     /**
@@ -101,6 +110,6 @@ public class ItemRestauranteService {
      * @return Uma lista de itens do restaurante.
      */
     public List<ItemRestaurante> buscarItensPorRestaurante(Long restauranteId) {
-        return itemRestauranteRepository.findByRestauranteIdOrderByNomeAsc(restauranteId);
+        return itemRestauranteRepository.findByRestauranteIdAndAtivoTrueOrderByNomeAsc(restauranteId);
     }
 }

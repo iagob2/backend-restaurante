@@ -19,6 +19,19 @@ public interface ItemRestauranteRepository extends JpaRepository<ItemRestaurante
     List<ItemRestaurante> findByRestauranteIdOrderByNomeAsc(Long restauranteId);
 
     /**
+     * Busca todos os pratos ativos de um restaurante específico, ordenados pelo nome.
+     * @param restauranteId O ID do restaurante.
+     * @return Uma lista de pratos ativos.
+     */
+    List<ItemRestaurante> findByRestauranteIdAndAtivoTrueOrderByNomeAsc(Long restauranteId);
+
+    /**
+     * Busca todos os pratos ativos.
+     * @return Uma lista de pratos ativos.
+     */
+    List<ItemRestaurante> findByAtivoTrueOrderByNomeAsc();
+
+    /**
      * Busca pratos pelo nome, ignorando maiúsculas e minúsculas.
      * @param nome O nome do prato.
      * @return Uma lista de pratos que correspondem ao nome.
