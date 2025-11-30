@@ -92,7 +92,7 @@
         // por enquanto, vamos apenas garantir que a senha não seja atualizada de forma acidental.
         public Optional<Restaurante> atualizarRestaurante(Long id, Restaurante restauranteAtualizado) {
             return restauranteRepository.findById(id).map(restauranteExistente -> {
-                // ... (copiar todos os outros campos, exceto a senha)
+                // Atualiza campos básicos
                 restauranteExistente.setNome(restauranteAtualizado.getNome());
                 String cnpjLimpo = somenteNumeros(restauranteAtualizado.getCnpj());
                 if (isCnpjValido(cnpjLimpo) && !cnpjLimpo.equals(restauranteExistente.getCnpj())) {
@@ -105,7 +105,60 @@
                 }
                 restauranteExistente.setEmail(restauranteAtualizado.getEmail());
                 restauranteExistente.setTelefone(restauranteAtualizado.getTelefone());
-                // ... e os outros campos
+                
+                // Atualiza endereço
+                if (restauranteAtualizado.getCep() != null && !restauranteAtualizado.getCep().isBlank()) {
+                    Endereco endereco = viaCepService.buscaEnderecoPorCep(restauranteAtualizado.getCep());
+                    restauranteExistente.setCep(restauranteAtualizado.getCep());
+                    restauranteExistente.setRua(endereco.rua());
+                    restauranteExistente.setBairro(endereco.bairro());
+                    restauranteExistente.setCidade(endereco.cidade());
+                    restauranteExistente.setEstado(endereco.estado());
+                }
+                if (restauranteAtualizado.getNumero() != null) {
+                    restauranteExistente.setNumero(restauranteAtualizado.getNumero());
+                }
+                
+                // Atualiza campos de descrição e informações
+                if (restauranteAtualizado.getDescricao() != null) {
+                    restauranteExistente.setDescricao(restauranteAtualizado.getDescricao());
+                }
+                if (restauranteAtualizado.getHorario() != null) {
+                    restauranteExistente.setHorario(restauranteAtualizado.getHorario());
+                }
+                if (restauranteAtualizado.getLotacao() != null) {
+                    restauranteExistente.setLotacao(restauranteAtualizado.getLotacao());
+                }
+                
+                // Atualiza redes sociais
+                if (restauranteAtualizado.getSite() != null) {
+                    restauranteExistente.setSite(restauranteAtualizado.getSite());
+                }
+                if (restauranteAtualizado.getFacebook() != null) {
+                    restauranteExistente.setFacebook(restauranteAtualizado.getFacebook());
+                }
+                if (restauranteAtualizado.getInstagram() != null) {
+                    restauranteExistente.setInstagram(restauranteAtualizado.getInstagram());
+                }
+                if (restauranteAtualizado.getWhatsapp() != null) {
+                    restauranteExistente.setWhatsapp(restauranteAtualizado.getWhatsapp());
+                }
+                
+                // Atualiza URLs de arquivos (logo, banner, cardápio)
+                if (restauranteAtualizado.getLogoUrl() != null) {
+                    restauranteExistente.setLogoUrl(restauranteAtualizado.getLogoUrl());
+                }
+                if (restauranteAtualizado.getBannerUrl() != null) {
+                    restauranteExistente.setBannerUrl(restauranteAtualizado.getBannerUrl());
+                }
+                if (restauranteAtualizado.getCardapioUrl() != null) {
+                    restauranteExistente.setCardapioUrl(restauranteAtualizado.getCardapioUrl());
+                }
+                
+                // Atualiza campos booleanos
+                restauranteExistente.setAceitaComunicacao(restauranteAtualizado.isAceitaComunicacao());
+                restauranteExistente.setAceitaMarketing(restauranteAtualizado.isAceitaMarketing());
+                restauranteExistente.setAceitaProtecaoDados(restauranteAtualizado.isAceitaProtecaoDados());
 
                 // A senha não deve ser atualizada aqui. Geralmente, existe um endpoint
                 // separado para isso.
